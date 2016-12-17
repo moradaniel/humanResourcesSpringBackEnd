@@ -14,6 +14,6 @@ public class GreetingServiceTest	{
 
     @Test
     public	void testGreet()	{
-        assertThat("Hello Test3").isEqualTo(service.greet("Test"));
+        assertThat("Hello Test").isEqualTo(service.greet("Test"));
     }
 }

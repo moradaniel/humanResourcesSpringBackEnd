@@ -1,13 +1,31 @@
 
 ## Production
 
+Run standalone from console
+```
+java -jar build/libs/humanResources-0.0.1-SNAPSHOT.war
+```
+
 ## Development
 
+Build
+```
+./gradlew build --info
+```
 
+Run
 
+Run standalone with Gradle
+```
+./gradlew clean bootRun
+```
 
 ## Testing
 
+### Run tests
+```
+./gradlew test --info
+```
 
 ## Gradle tasks
 
@@ -16,10 +34,7 @@
 ./gradlew clean
 ```
 
-### Run tests
-```
-./gradlew test --info
-```
+
 
 ### List Gradle tasks
 
@@ -37,6 +52,12 @@
 ./gradlew compileJava
 ```
 
+### List dependencies
+
+```
+./gradlew -q dependencies --configuration compile
+./gradlew -q dependencies --configuration testCompile
+```
 
 ### Run a jar file from console
 ```
@@ -45,10 +66,11 @@ $java -cp build/libs/humanResources.jar org.humanResources.service.Main Reader
 
 ## ChangeLog
 
+ - Implemented basic Spring Boot application running on port 8080
  - Added unit test infrastructure with JUnit and AssertJ
- - Added gradle wrapper --gradle-version 3.2.1
+ - Added Gradle wrapper --gradle-version 3.2.1
  
 ## TODO
 
- - Prepare Gradle build environment
+ - Add Swagger support
  - Implement test, development, production environments

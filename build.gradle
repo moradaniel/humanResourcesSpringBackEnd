@@ -1,15 +1,49 @@
+buildscript {
+    ext {
+        springBootVersion = '1.4.2.RELEASE'
+    }
+    repositories {
+        jcenter()
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
 
 apply	plugin:	'java'
-apply plugin: 'idea'
+apply   plugin: 'org.springframework.boot'
+
+
+apply   plugin: 'idea'
 //apply plugin: 'eclipse'
+apply   plugin: 'project-report'
 
-
-version = '1.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+/*
+jar {
+    baseName = 'humanResources'
+    version =  '0.0.1-SNAPSHOT'
+}*/
+
+apply plugin: 'war'
+
+war {
+    baseName = 'humanResources'
+    version =  '0.0.1-SNAPSHOT'
+}
+
+springBoot {
+    mainClass = "org.humanResources.web.SpringBootHumanResourcesApplication"
+}
+
+//version = '1.0'
+
 /*jar file name*/
-archivesBaseName = "humanResources"
+//archivesBaseName = "humanResources"
 
 
 idea {
@@ -28,13 +62,32 @@ eclipse {
 }*/
 
 
-repositories	{
-    mavenCentral()
+repositories {
+   // mavenCentral()
+    jcenter()
+    maven { url "http://repo.spring.io/snapshot" }
+    maven { url "http://repo.spring.io/milestone" }
 }
 
-dependencies	{
-    testCompile	'junit:junit:4.12'
+dependencies {
+
+   // compile('org.springframework.boot:spring-boot-starter')
+    compile("org.springframework.boot:spring-boot-starter-web")
+
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+
+    //runtime('com.h2database:h2')
+
+    testCompile	('junit:junit:4.12'){
+        // exclude module: 'hamcrest-core'
+    }
+    testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile 'org.assertj:assertj-core:3.6.1'
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2.1'
 }
 
 
@@ -49,7 +102,7 @@ task copyDependencies(type: Copy) {
     into 'dependencies'
 }
 
-
+/*
 task helloWorld <<	{
     println	"Hello,	World!"
-}
+}*/
