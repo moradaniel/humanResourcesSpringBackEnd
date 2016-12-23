@@ -67,14 +67,20 @@ repositories {
     jcenter()
     maven { url "http://repo.spring.io/snapshot" }
     maven { url "http://repo.spring.io/milestone" }
+    mavenLocal()
 }
 
 dependencies {
 
-   // compile('org.springframework.boot:spring-boot-starter')
     compile("org.springframework.boot:spring-boot-starter-web")
 
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    //providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    compile("org.springframework.boot:spring-boot-starter-tomcat")
+
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+
+
+    compile ("com.oracle:ojdbc7:12.1.0.1")
 
     //runtime('com.h2database:h2')
 

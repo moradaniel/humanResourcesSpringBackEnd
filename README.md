@@ -64,8 +64,15 @@ Run standalone with Gradle
 $java -cp build/libs/humanResources.jar org.humanResources.service.Main Reader
 ```
 
+### Install Oracle dependencies
+```
+mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.1 -Dpackaging=jar
+```
+
 ## ChangeLog
 
+ - Added Hibernate configuration
+ - Added Oracle datasource configuration
  - Implemented basic Spring Boot application running on port 8080
  - Added unit test infrastructure with JUnit and AssertJ
  - Added Gradle wrapper --gradle-version 3.2.1
@@ -74,3 +81,4 @@ $java -cp build/libs/humanResources.jar org.humanResources.service.Main Reader
 
  - Add Swagger support
  - Implement test, development, production environments
+ - Enable logging
