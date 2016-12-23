@@ -71,6 +71,7 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
 ## ChangeLog
 
+ - Added basic Jpa Repository
  - Added Hibernate configuration
  - Added Oracle datasource configuration
  - Implemented basic Spring Boot application running on port 8080
@@ -82,3 +83,4 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
  - Add Swagger support
  - Implement test, development, production environments
  - Enable logging
+ - Add Auditing

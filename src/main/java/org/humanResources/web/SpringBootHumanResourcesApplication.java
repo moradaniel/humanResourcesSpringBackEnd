@@ -1,11 +1,13 @@
 package org.humanResources.web;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
@@ -26,7 +28,9 @@ tells Spring Boot to start adding beans based on classpath settings, other beans
 
 //@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 
-@ComponentScan({"org.humanResources"})
+@ComponentScan(basePackages = {"org.humanResources"})
+@EnableJpaRepositories("org.humanResources")
+@EntityScan("org.humanResources")
 public class SpringBootHumanResourcesApplication extends SpringBootServletInitializer {
 
     final public static String classpathBaseDirectory = "humanResources";
