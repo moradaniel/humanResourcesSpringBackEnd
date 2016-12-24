@@ -17,38 +17,12 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Properties;
 
-
 @Configuration
-
-
 @EnableTransactionManagement
 public class DevDatabaseConfig {
 
     @Autowired
     private Environment env;
-
-    /*
-    @NotNull
-    private String username;
-
-    @NotNull
-    private String password;
-
-    @NotNull
-    private String url;
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }*/
-
 
     @Primary
     @Bean(name = "oracleDataSource")
