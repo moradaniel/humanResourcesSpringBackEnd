@@ -9,26 +9,28 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.sql.DataSource;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
-//import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 
 //http://www.jayway.com/2009/10/28/untestable-code-with-mockito-and-powermock/
 
-//@RunWith(PowerMockRunner.class)
-//@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 
 
@@ -52,13 +54,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextConfiguration(classes={ IntegrationTestsServicesConfig.class,
         IntegrationTestsDatabaseConfig.class}, loader = SpringApplicationContextLoader.class)*/
 
-//Classes that will be prepared by powermock
-/*@PrepareForTest({ RsUser.class, RsUtil.class})
-@PowerMockIgnore({"javax.management.*",
-                  "javax.crypto.*",
-                  "javax.net.ssl.*",
-                  "org.springframework.orm.*",
-                  "org.hibernate.*"})*/
+
 
 public abstract class BaseIntegrationTest {
 
@@ -83,12 +79,12 @@ public abstract class BaseIntegrationTest {
 /*
     @Autowired
     protected TestRestTemplate restTemplate;*/
-/*
+
     @Autowired
-   // @Qualifier("rsmetaDataSource")
+    @Qualifier("dataSource")
     DataSource dataSource;
 
-
+/*
     @Autowired
     @Qualifier("webServicesObjectMapper")
     protected ObjectMapper webServicesObjectMapper;
@@ -103,40 +99,11 @@ public abstract class BaseIntegrationTest {
   //  protected String resultContentType = "application/json-rpc";
 
     
-    /*protected static class Application {
-		public static void main(String[] args) {
-			new SpringApplicationBuilder(com.rs.web.Application.class).properties(
-					"spring.application.name=eureka", "server.servletPath=/servlet").run(
-					args);
-		}
-	}*/
-    
-    /*
-    @Autowired
-    //@Qualifier("myDataSource")
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-        System.out.println(dataSource);
-    }*/
-
-    /*
-    @Autowired
-    DatabasePopulator databasePopulator;*/
-
     static {
     	//Alternatively we can set -Dspring.config.location=classpath:rsapp20-jsonrpc/ as a VM parameter
         System.setProperty("spring.config.location", "classpath:"+SpringBootHumanResourcesApplication.classpathBaseDirectory+"/");
 
-        /*rsconfig = (PropertyResourceBundle)PropertyResourceBundle.getBundle("rs_config");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("PST"));*/
-
 /*
-        DatabaseBean.setJ2SEpool((String)rsconfig.handleGetObject("jdbcDriver"),
-                (String)rsconfig.handleGetObject("dbConnectString"),
-                (String)rsconfig.handleGetObject("dbConnectStringRsd")
-        );
-
         dbDataSource = new BasicDataSource();
 
 
@@ -154,6 +121,7 @@ public abstract class BaseIntegrationTest {
             /*ScriptUtils.executeSqlScript(
                     dbDataSource.getConnection(),
                     new ClassPathResource("sql/rsss_schema.sql"));*/
+
         }catch(Exception e) {
             throw new RuntimeException(e);
         }
@@ -168,29 +136,13 @@ public abstract class BaseIntegrationTest {
         //create database before each test
         //DatabasePopulatorUtils.execute(databasePopulator, dataSource);
 
-        //clean test database bebore each test
-    //    ScriptUtils.executeSqlScript(dataSource.getConnection(),
-    //            new ClassPathResource("sql/clean_test_database.sql"));
+        //clean test database before each test
 
-        /*
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("PST"));
+        emptyDatabaseSchema();
 
-        Date NOW = sdf.parse("2015-03-15 00:00:00");
-        long NOWinMillis=NOW.getTime();
-        //final Date mockedDate = mock(Date.class);
-        mockStatic(System.class);
-        when(System.currentTimeMillis()).thenReturn(NOWinMillis);*/
+        ScriptUtils.executeSqlScript(dataSource.getConnection(),
+                new ClassPathResource("sql/populate_test_data.sql"));
 
-
-        //expect(System.getProperty("property")).andReturn("my property");
-
-        //replayAll();
-        /*
-            everytime we call new Date() in any class declared in @PrepareForTest
-            we will get the NOW instance
-        * */
-        //whenNew(Date.class).withNoArguments().thenReturn(mockedDate);
 
 
         this.mockMvc = webAppContextSetup(webApplicationContext)
@@ -219,6 +171,48 @@ public abstract class BaseIntegrationTest {
 
     }
 
+    private void emptyDatabaseSchema() throws Exception {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            ClassPathResource classPathResource = new ClassPathResource("sql/empty_database_schema.plsql");
+            BufferedReader br = new BufferedReader(new InputStreamReader(classPathResource.getInputStream()),1024);
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                stringBuilder.append(line).append('\n');
+            }
+            br.close();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        String plsql = stringBuilder.toString();
+
+        Connection connection = null;
+        CallableStatement cstmt = null;
+
+        try
+        {
+            connection = dataSource.getConnection();
+            cstmt = connection.prepareCall(plsql);
+            cstmt.execute();
+
+
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        finally
+        {
+            try { if (cstmt != null) cstmt.close(); } catch (Exception e) {};
+            try { if (connection != null) connection.close(); } catch (Exception e) {};
+        }
+
+
+
+    }
+
     private void injectStaticTimeProvider() {
 
         /*
@@ -238,6 +232,8 @@ public abstract class BaseIntegrationTest {
 
     @After
     public void tearDown() throws Exception {
+        /*ScriptUtils.executeSqlScript(dataSource.getConnection(),
+                new ClassPathResource("sql/after_test_database.sql"));*/
     }
 /*
     protected JsonNode getJSonFromFile(String jsonFile) {

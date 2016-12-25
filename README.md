@@ -71,6 +71,7 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
 ## ChangeLog
 
+ - Implementing integration test infrastructure: empty Oracle tables and reset sequences before each test
  - Added basic Jpa Repository
  - Added Hibernate configuration
  - Added Oracle datasource configuration

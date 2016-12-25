@@ -25,7 +25,7 @@ public class DevDatabaseConfig {
     private Environment env;
 
     @Primary
-    @Bean(name = "oracleDataSource")
+    @Bean(name = "dataSource")
     DataSource oracleDataSource() throws SQLException {
 
 
@@ -51,7 +51,7 @@ public class DevDatabaseConfig {
     }
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory(@Qualifier("oracleDataSource") DataSource oracleDataSource/*,
+    public LocalSessionFactoryBean sessionFactory(@Qualifier("dataSource") DataSource oracleDataSource/*,
                                                   @Qualifier("timeProvider") TimeProvider timeProvider*/) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(oracleDataSource);
