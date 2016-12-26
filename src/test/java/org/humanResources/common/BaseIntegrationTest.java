@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @RunWith(SpringJUnit4ClassRunner.class)
 
 
-//uncomment WebIntegrationTest to use a real container(Eg Tomcat)
 @SpringBootTest(classes = {SpringBootHumanResourcesApplication.class,
         /*IntegrationTestsDatabaseConfig.class,
         DevDatabaseConfig.class,

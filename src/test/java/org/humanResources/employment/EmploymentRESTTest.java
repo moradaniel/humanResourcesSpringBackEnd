@@ -4,6 +4,8 @@ package org.humanResources.employment;
 import org.humanResources.common.BaseIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,9 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @PowerMockIgnore("javax.management.*")*/
 public class EmploymentRESTTest extends BaseIntegrationTest{
 
-    //private static final Logger LOG = LoggerFactory.getLogger(PropertyServiceJsonRpcTest.class);
 
-    private static String URI = "/api/v1/PropertyService.json";
+
+    //private static String URI = "/api/v1/PropertyService.json";
 
     /*
 	@Autowired
@@ -110,7 +112,8 @@ public class EmploymentRESTTest extends BaseIntegrationTest{
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        System.out.println(content);
+        logger.info(content);
+
     }
 
 

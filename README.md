@@ -71,6 +71,7 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
 ## ChangeLog
 
+ - Configured logging for integration tests
  - Implementing integration test infrastructure: empty Oracle tables and reset sequences before each test
  - Added basic Jpa Repository
  - Added Hibernate configuration
@@ -83,5 +84,4 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
  - Add Swagger support
  - Implement test, development, production environments
- - Enable logging
  - Add Auditing
