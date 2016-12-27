@@ -1,0 +1,23 @@
+description = 'The human resources REST api'
+
+apply plugin: 'war'
+
+war {
+    baseName = 'humanResources-rest'
+    version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+    compile project(':humanResources-core')
+}
+
+springBoot {
+    mainClass = "org.humanResources.web.SpringBootHumanResourcesApplication"
+}
+
+// Ensure each project uses a different remote debug port
+/*def remoteDebugPort = '5002'
+
+if (!project.hasProperty('prod')) {
+    bootRun.jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=" + remoteDebugPort]
+}*/

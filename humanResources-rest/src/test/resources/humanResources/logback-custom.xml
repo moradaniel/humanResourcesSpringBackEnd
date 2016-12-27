@@ -21,6 +21,15 @@
         </layout>
     </appender>
 
+    <!--appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+        </layout>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${LOG_FILE}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender -->
 
     <!-- Plain Text Rolling Appender -->
     <appender name="FILE"
@@ -54,5 +63,7 @@
 
     <!-- logger name="org.springframework.security" level="DEBUG" / -->
     <logger name="org.humanResources" level="DEBUG" />
+
+    <logger name="org.hibernate" level="DEBUG" />
 
 </configuration>

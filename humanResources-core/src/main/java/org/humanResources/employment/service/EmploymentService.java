@@ -21,6 +21,7 @@ public class EmploymentService {
 
     @Transactional
     public List<Employment> findAll(){
-        return repo.findAll();
+        List<Employment> employments = repo.findAll();
+        return employments;
     }
 }

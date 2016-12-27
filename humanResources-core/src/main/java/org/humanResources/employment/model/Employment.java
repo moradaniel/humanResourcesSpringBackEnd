@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 
 
 @Entity
-@Table(name = "employment", schema="HUMAN_RESOURCES")
+@Table(name = "employment")//, schema="HUMAN_RESOURCES")
 public class Employment {
 
     @Id

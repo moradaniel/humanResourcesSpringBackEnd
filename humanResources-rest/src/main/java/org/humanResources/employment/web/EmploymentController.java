@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 public class EmploymentController {
 
-    private static final Logger log = LoggerFactory.getLogger(EmploymentController.class);
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     EmploymentService employmentService;

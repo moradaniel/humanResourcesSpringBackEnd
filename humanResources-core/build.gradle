@@ -1,0 +1,13 @@
+description = 'The human resources core module'
+
+jar {
+    baseName = 'humanResources-core'
+    version = '0.0.1-SNAPSHOT'
+   // mainClassName = 'org.humanResources.CommonMain'
+}
+
+// Prevents common subproject dependencies from being included in the common jar itself.
+// Without this, each subproject that included common would include each shared dependency twice.
+bootRepackage {
+    enabled = false
+}

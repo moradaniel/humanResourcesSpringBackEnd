@@ -1,0 +1,4 @@
+rootProject.name = 'humanResources'
+
+include 'humanResources-core'
+include 'humanResources-rest'

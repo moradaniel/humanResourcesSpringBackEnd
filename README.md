@@ -13,6 +13,13 @@ Build
 ./gradlew build --info
 ```
 
+Build skip tests
+```
+./gradlew build -x test --info
+```
+
+
+
 Run
 
 Run standalone with Gradle
@@ -71,6 +78,7 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
 ## ChangeLog
 
+ - Refactored into Gradle subprojects
  - Configured logging for integration tests
  - Implementing integration test infrastructure: empty Oracle tables and reset sequences before each test
  - Added basic Jpa Repository
