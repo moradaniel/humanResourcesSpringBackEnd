@@ -72,6 +72,36 @@ SQL>
 
 ALTER SESSION SET CURRENT_SCHEMA = HUMAN_RESOURCES_TEST;
 
+
+CREATE TABLE "SEC_ACCOUNT"
+   (	"ID" NUMBER(10,0) NOT NULL ENABLE,
+	"NAME" VARCHAR2(255 CHAR) NOT NULL ENABLE,
+	"PASSWORD" VARCHAR2(255) NOT NULL ENABLE,
+	"ENABLED" NUMBER(1,0) DEFAULT 1 NOT NULL ENABLE,
+	"UNLOCKED" NUMBER(1,0) DEFAULT 1 NOT NULL ENABLE,
+	"EXPIRE" TIMESTAMP (7),
+	"EXPIREPASSWORD" TIMESTAMP (7),
+	 PRIMARY KEY ("ID"));
+
+CREATE SEQUENCE SEC_ACCOUNT_SEQ
+  START WITH 1
+  MAXVALUE 9999999999999999999999999999
+  MINVALUE 1
+  NOCYCLE
+  CACHE 20
+  NOORDER;
+
+
+CREATE OR REPLACE TRIGGER SEC_ACCOUNT_TRG
+	before insert ON SEC_ACCOUNT for each row
+	WHEN (
+	new.id is null
+	      )
+	begin
+	    select SEC_ACCOUNT_SEQ.nextval into :new.id from dual;
+	end;
+
+
 -- ----------------------------
 -- Table structure for DEPARTMENT
 -- ----------------------------
@@ -150,6 +180,12 @@ ALTER TABLE "EMPLOYMENT" ADD CHECK ("TITLE" IS NOT NULL);
 -- ----------------------------
 ALTER TABLE "EMPLOYMENT" ADD PRIMARY KEY ("ID");
 
+
+-- ----------------------------
+-- BEGIN PERSON
+-- ----------------------------
+
+
 -- ----------------------------
 -- Indexes structure for table PERSON
 -- ----------------------------
@@ -192,7 +228,11 @@ ALTER TABLE "PERSON" ADD PRIMARY KEY ("ID");
 	begin
 	    select PERSON_SEQ.nextval into :new.id from dual;
 	end;
-	/
+
+
+-- ----------------------------
+-- END PERSON
+-- ----------------------------
 
 
 -- COMMIT;

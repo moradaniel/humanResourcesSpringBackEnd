@@ -1,3 +1,12 @@
+## Technologies
+
+- Java 1.8
+- Scala
+- Spring Boot
+- Gradle 
+- Hibernate 
+- Database Oracle 11g 
+
 
 ## Production
 
@@ -15,7 +24,7 @@ Build
 
 Build skip tests
 ```
-./gradlew build -x test --info
+./gradlew clean build -x test --info
 ```
 
 
@@ -93,3 +102,8 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
  - Add Swagger support
  - Implement test, development, production environments
  - Add Auditing
+ 
+ 
+ ## Credits
+ 
+ http://www.svlada.com/jwt-token-authentication-with-spring-boot/

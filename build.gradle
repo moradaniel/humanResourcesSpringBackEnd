@@ -34,9 +34,11 @@ buildscript {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'scala'
     apply plugin: 'eclipse-wtp'
     //apply plugin: 'war'
-    apply plugin: 'spring-boot'
+    apply plugin: 'org.springframework.boot'
+
    // apply plugin: 'io.spring.dependency-management'
 
     sourceCompatibility = 1.8
@@ -103,6 +105,14 @@ subprojects {
         // End: JUnit
 
         testCompile 'org.assertj:assertj-core:3.6.1'
+
+
+        compile	'org.scala-lang:scala-library:2.12.1'
+
+
+        compile "com.querydsl:querydsl-jpa:4.1.4"
+
+        compile "com.querydsl:querydsl-apt:4.1.4:jpa" //
     }
 
     idea {

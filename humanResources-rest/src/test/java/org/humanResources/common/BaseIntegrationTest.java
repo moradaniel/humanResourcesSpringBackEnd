@@ -140,7 +140,7 @@ public abstract class BaseIntegrationTest {
         emptyDatabaseSchema();
 
         ScriptUtils.executeSqlScript(dataSource.getConnection(),
-                new ClassPathResource("sql/populate_test_data.sql"));
+                new ClassPathResource("humanResources/sql/populate_test_data.sql"));
 
 
 
@@ -173,7 +173,7 @@ public abstract class BaseIntegrationTest {
     private void emptyDatabaseSchema() throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            ClassPathResource classPathResource = new ClassPathResource("sql/empty_database_schema.plsql");
+            ClassPathResource classPathResource = new ClassPathResource("humanResources/sql/empty_database_schema.plsql");
             BufferedReader br = new BufferedReader(new InputStreamReader(classPathResource.getInputStream()),1024);
 
             String line;
