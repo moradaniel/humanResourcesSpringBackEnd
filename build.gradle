@@ -30,7 +30,7 @@ buildscript {
     }
 }
 
-
+ext.libraries = [jsonwebtoken_jjwt_version:"0.6.0"]
 
 subprojects {
     apply plugin: 'java'
@@ -50,6 +50,8 @@ subprojects {
         mavenLocal()
         mavenCentral()
     }
+
+
     dependencies {
 
         // Start: JUnit

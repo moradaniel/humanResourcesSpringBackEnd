@@ -22,7 +22,7 @@ public class EmploymentController {
     EmploymentService employmentService;
 
 
-    @RequestMapping(value="/employment",
+    @RequestMapping(value="/api/employment",
                     method = RequestMethod.GET,
                     produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public @ResponseBody List<Employment> getEmployment(){

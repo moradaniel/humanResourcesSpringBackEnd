@@ -8,11 +8,27 @@ war {
 }
 
 dependencies {
+
     compile project(':humanResources-core')
+    /*
+    Use core test resources
+    https://softnoise.wordpress.com/2014/09/07/gradle-sub-project-test-dependencies-in-multi-project-builds/
+    * */
+    testCompile project(':humanResources-core').sourceSets.test.output
+
+    compile("org.springframework.boot:spring-boot-starter-security")
+
+    compile "io.jsonwebtoken:jjwt:${libraries.jsonwebtoken_jjwt_version}"
 }
 
 springBoot {
     mainClass = "org.humanResources.web.SpringBootHumanResourcesApplication"
+}
+
+configurations.testCompile.each {
+
+    if(it.absolutePath.contains('build'))
+        println "testCompile: $it"
 }
 
 // Ensure each project uses a different remote debug port

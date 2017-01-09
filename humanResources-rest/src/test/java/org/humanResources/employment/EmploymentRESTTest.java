@@ -102,7 +102,7 @@ public class EmploymentRESTTest extends BaseIntegrationTest{
 
     @Test
     public void getAll() throws Exception {
-        MvcResult result = mockMvc.perform(get("/employment"))
+        MvcResult result = mockMvc.perform(get("/api/employment"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
               //  .andExpect(jsonPath("$",iterableWithSize(5)))

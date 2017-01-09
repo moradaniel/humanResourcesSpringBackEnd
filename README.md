@@ -87,6 +87,8 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
 ## ChangeLog
 
+ - Added support for Scala
+ - Integrated QueryDSL for building type-safe SQL queries
  - Refactored into Gradle subprojects
  - Configured logging for integration tests
  - Implementing integration test infrastructure: empty Oracle tables and reset sequences before each test
