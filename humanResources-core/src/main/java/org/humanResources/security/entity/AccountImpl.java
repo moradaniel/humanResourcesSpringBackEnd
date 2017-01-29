@@ -1,24 +1,24 @@
 package org.humanResources.security.entity;
 
+import org.humanResources.persistence.PersistentAbstract;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
 @Table(name	= "SEC_ACCOUNT" )
-public class AccountImpl implements Account {
+@SequenceGenerator(name="SEQ_GEN", sequenceName="SEC_ACCOUNT_SEQ", allocationSize=1)
+public class AccountImpl extends PersistentAbstract implements Account, java.io.Serializable {
 
 
-    @Id
-    @SequenceGenerator(name="SEQ_GEN", sequenceName="SEC_ACCOUNT_SEQ", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_GEN")
-    private	Long	id;
-
-    @Column(name = "NAME", length =	200)
+    @Column(name = "NAME", nullable=false, length =	200)
     private String    name;
 
 
 
-    @Column(name = "PASSWORD", length =	200)
+    @Column(name = "PASSWORD", nullable=false, length =	200)
     private String    password;
 
     /*private Date      expire;
@@ -26,24 +26,26 @@ public class AccountImpl implements Account {
     private boolean   nonLocked;
     private boolean   enabled = true;*/
 
+    /*@ManyToMany(targetEntity = RoleImpl.class)
+    @JoinTable(name="SEC_ACCOUNT_ROLE",
+            joinColumns={@JoinColumn(name="ACCOUNTID")},
+            inverseJoinColumns={@JoinColumn(name="ROLEID")}
+    )
+    private List<Role> roles = new ArrayList<>();*/
 
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccountRoleAssociation> roles = new ArrayList<>();
 
     public	AccountImpl()	{}
 
-    public	AccountImpl(Long	id,	String	name, String password)	{
+    public	AccountImpl(Long id, String	name, String password)	{
         super();
         this.id	=	id;
         this.name	=	name;
         this.password	=	password;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -59,6 +61,19 @@ public class AccountImpl implements Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    public List<AccountRoleAssociation> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<AccountRoleAssociation> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(AccountRoleAssociation accountRoleAssociation) {
+        this.getRoles().add(accountRoleAssociation);
     }
 
 }
