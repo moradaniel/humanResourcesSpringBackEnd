@@ -34,7 +34,9 @@ public class AccountImpl extends PersistentAbstract implements Account, java.io.
     private List<Role> roles = new ArrayList<>();*/
 
 
-    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "account",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountRoleAssociation> roles = new ArrayList<>();
 
     public	AccountImpl()	{}

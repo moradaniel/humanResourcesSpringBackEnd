@@ -57,6 +57,8 @@ public class AccountServiceTest extends BaseTest {
         assertThat(accounts).size().isEqualTo(1);
 
 
+        assertThat(accounts.getContent().get(0).getRoles().size()).isEqualTo(1);
+
 
 	}
 
@@ -82,9 +84,6 @@ public class AccountServiceTest extends BaseTest {
 
 
         assertThat(account.getName()).isEqualTo(newName);
-
-
-
 
     }
 

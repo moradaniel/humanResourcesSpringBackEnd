@@ -32,7 +32,7 @@ public class RoleImpl extends PersistentAbstract implements Role, java.io.Serial
 	private boolean enabled;
 
 
-    @OneToMany(mappedBy="account")
+    @OneToMany(mappedBy="role",fetch = FetchType.LAZY)
     private List<AccountRoleAssociation> accounts = new ArrayList<>();
 
 

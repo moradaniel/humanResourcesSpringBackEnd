@@ -3,6 +3,7 @@ package org.humanResources.config;
 
 import org.humanResources.environment.BaseTestEnvironmentImpl;
 import org.humanResources.security.service.AccountService;
+import org.humanResources.security.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +18,15 @@ public class IntegrationTestsServicesConfig {
     @Qualifier("accountService")
     private AccountService accountService;
 
+    @Autowired
+    @Qualifier("roleService")
+    private RoleService roleService;
 
     @Bean
     public BaseTestEnvironmentImpl testEnvironment() {
         BaseTestEnvironmentImpl testEnvironment = new BaseTestEnvironmentImpl(
-    			accountService
+    			accountService,
+                roleService
     			);
 
         return testEnvironment;
