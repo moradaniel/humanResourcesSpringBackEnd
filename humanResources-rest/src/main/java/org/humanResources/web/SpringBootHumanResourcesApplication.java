@@ -1,13 +1,18 @@
 package org.humanResources.web;
 
+import org.humanResources.json.WebServicesObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
@@ -35,6 +40,9 @@ public class SpringBootHumanResourcesApplication extends SpringBootServletInitia
 
     final public static String classpathBaseDirectory = "humanResources";
 
+    @Autowired
+    @Qualifier("webServicesObjectMapper")
+    WebServicesObjectMapper webServicesObjectMapper;
 
     static Properties getProperties() {
 
@@ -87,6 +95,15 @@ public class SpringBootHumanResourcesApplication extends SpringBootServletInitia
         }
 
 
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+        //ObjectMapper objectMapper = new ObjectMapper();
+        //webServicesObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        jsonConverter.setObjectMapper(webServicesObjectMapper);
+        return jsonConverter;
     }
 
 
