@@ -87,6 +87,7 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
 ## ChangeLog
 
+ - Added custom JSON object mapper
  - Added support for Scala
  - Added Integration Tests to account entity
  - Integrated QueryDSL for building type-safe SQL queries
