@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -120,8 +121,8 @@ public abstract class BaseTest {
 
         emptyTestDatabaseSchema();
 
-     //   ScriptUtils.executeSqlScript(dataSource.getConnection(),
-     //           new ClassPathResource("humanResources/sql/populate_test_data.sql"));
+        ScriptUtils.executeSqlScript(dataSource.getConnection(),
+                new ClassPathResource("humanResources/sql/clean_test_database.sql"));
 
     }
 

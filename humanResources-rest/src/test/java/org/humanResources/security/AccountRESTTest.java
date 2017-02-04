@@ -2,8 +2,10 @@ package org.humanResources.security;
 
 //import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import org.humanResources.common.BaseIntegrationTest;
+import org.humanResources.environment.BaseTestEnvironmentImpl;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,6 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AccountRESTTest extends BaseIntegrationTest{
 
 
+
+    @Autowired
+    BaseTestEnvironmentImpl baseTestEnvironment;
 
     private static String baseURL = "/api/account";
 
@@ -27,6 +32,10 @@ public class AccountRESTTest extends BaseIntegrationTest{
 
     @Test
     public void getAll() throws Exception {
+
+        baseTestEnvironment.build();
+
+
         MvcResult result = mockMvc.perform(get(baseURL+"/findByNameStartsWith").param("name","default"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))

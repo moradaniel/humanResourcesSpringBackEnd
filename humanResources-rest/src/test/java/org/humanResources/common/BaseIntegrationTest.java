@@ -140,9 +140,14 @@ public abstract class BaseIntegrationTest {
         emptyDatabaseSchema();
 
         ScriptUtils.executeSqlScript(dataSource.getConnection(),
+                new ClassPathResource("humanResources/sql/clean_test_database.sql"));
+
+
+
+  /*      ScriptUtils.executeSqlScript(dataSource.getConnection(),
                 new ClassPathResource("humanResources/sql/populate_test_data.sql"));
 
-
+*/
 
         this.mockMvc = webAppContextSetup(webApplicationContext)
                 //@Autowire the FilterChainProxy (what the DelegatingProxyFilter delegates to)
