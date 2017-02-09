@@ -29,6 +29,7 @@ public class AccountService {
     }
 
 
+
     @Transactional
     public Page<AccountImpl> findByNameStartsWith(String name){
 
@@ -38,17 +39,12 @@ public class AccountService {
         final PageRequest page1 = new PageRequest(0, 20);
 
         Predicate accountPredicate = AccountPredicates.firstOrLastNameStartsWith(name);
-      //  Page<AccountImpl> accounts = accountRepository.findAll(accountPredicate,page1);
-
-        AccountQueryFilter accountQueryFilter = new AccountQueryFilter();
-        accountQueryFilter.setName(name);
-        Page<AccountImpl> accounts = accountRepository.findByFilter(accountQueryFilter,page1);
-
-
-        //Page<AccountImpl> accounts = accountRepository.findAll(accountPredicate, page1, JoinDescriptor.leftJoin(QAccountImpl.accountImpl.roles));
+        Page<AccountImpl> accounts = accountRepository.findAll(accountPredicate,page1);
 
         return accounts;
     }
+
+
 
     @Transactional
     public AccountImpl findById(Long id){
@@ -66,7 +62,8 @@ public class AccountService {
         return account;
     }
 
-    Page<AccountImpl> findByFilter(AccountQueryFilter accountQueryFilter, Pageable pageable){
+    @Transactional
+    public Page<AccountImpl> findByFilter(AccountQueryFilter accountQueryFilter, Pageable pageable){
         return accountRepository.findByFilter(accountQueryFilter, pageable);
     }
 

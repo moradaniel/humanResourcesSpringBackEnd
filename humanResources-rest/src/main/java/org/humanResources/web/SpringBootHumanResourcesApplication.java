@@ -4,6 +4,7 @@ import org.humanResources.json.WebServicesObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
@@ -33,6 +34,7 @@ tells Spring Boot to start adding beans based on classpath settings, other beans
 
 //@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 
+@SpringBootApplication
 @ComponentScan(basePackages = {"org.humanResources"})
 @EnableJpaRepositories("org.humanResources")
 @EntityScan("org.humanResources")
@@ -78,7 +80,7 @@ public class SpringBootHumanResourcesApplication extends SpringBootServletInitia
             StringBuffer errorBuf = new StringBuffer();
 
             errorBuf.append("\n########################################################################################## \n");
-            errorBuf.append("#############   SEVERE ERROR. Attempting to start rsapp20-jsonrpc application   ########### \n");
+            errorBuf.append("#############   SEVERE ERROR. Attempting to start humanResources application   ########### \n");
             errorBuf.append("#############   Please configure 'spring.profiles.active' VM environment variable.  ####### \n");
             errorBuf.append("#############   For example:                                       ###################### \n");
             errorBuf.append("#############    -Dspring.profiles.active=production,company1      ###################### \n");

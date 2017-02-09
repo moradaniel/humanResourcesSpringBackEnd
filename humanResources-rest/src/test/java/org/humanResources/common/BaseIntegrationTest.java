@@ -1,6 +1,15 @@
 package org.humanResources.common;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.humanResources.config.IntegrationTestsWebServicesConfig;
+import org.humanResources.environment.BaseTestEnvironmentImpl;
 import org.humanResources.web.SpringBootHumanResourcesApplication;
 import org.junit.After;
 import org.junit.Before;
@@ -15,7 +24,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -24,93 +34,52 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.util.HashMap;
 
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
-
-//http://www.jayway.com/2009/10/28/untestable-code-with-mockito-and-powermock/
-
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 
 
 @SpringBootTest(classes = {SpringBootHumanResourcesApplication.class,
-        /*IntegrationTestsDatabaseConfig.class,
-        DevDatabaseConfig.class,
-        IntegrationTestsServicesConfig.class,*/
-        IntegrationTestsWebServicesConfig.class})
-/*@SpringBootTest(classes = {com.rs.web.Application.class,
-        IntegrationTestsDatabaseConfig.class,
-		DevDatabaseConfig.class,
-        IntegrationTestsServicesConfig.class,
-        IntegrationTestsWebServicesConfig.class})*/
 
-
-//@ActiveProfiles(profiles= { "integrationTest" })
-
-/*@ContextConfiguration(classes = { IntegrationTestsServicesConfig.class,
-                                 IntegrationTestsDatabaseConfig.class})
-@ContextConfiguration(classes={ IntegrationTestsServicesConfig.class,
-        IntegrationTestsDatabaseConfig.class}, loader = SpringApplicationContextLoader.class)*/
-
-
+        IntegrationTestsWebServicesConfig.class},
+        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 
 public abstract class BaseIntegrationTest {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-   // private static BasicDataSource dbDataSource;
-    //private static PropertyResourceBundle rsconfig;
 
 
     @Autowired
     protected Environment env;
 
 
-    //@Autowired
-    //private FilterChainProxy springSecurityFilterChain;
+    @Autowired
+    private FilterChainProxy springSecurityFilterChain;
 
     protected MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-/*
-    @Autowired
-    protected TestRestTemplate restTemplate;*/
 
     @Autowired
     @Qualifier("dataSource")
     DataSource dataSource;
 
-/*
-    @Autowired
-    @Qualifier("webServicesObjectMapper")
-    protected ObjectMapper webServicesObjectMapper;
 
-    @Autowired
-    @Qualifier("domainObjectMapper")
-    protected ObjectMapper domainObjectMapper;
-
-*/
     protected String contentType = MediaType.APPLICATION_JSON_UTF8_VALUE;//"application/json";
 
   //  protected String resultContentType = "application/json-rpc";
 
     
     static {
-    	//Alternatively we can set -Dspring.config.location=classpath:rsapp20-jsonrpc/ as a VM parameter
+    	//Alternatively we can set -Dspring.config.location=classpath:humanResources/ as a VM parameter
         System.setProperty("spring.config.location", "classpath:"+SpringBootHumanResourcesApplication.classpathBaseDirectory+"/");
 
-/*
-        dbDataSource = new BasicDataSource();
-
-
-        dbDataSource.setDriverClassName((String) rsconfig.handleGetObject("jdbcDriver"));
-        dbDataSource.setUrl((String) rsconfig.handleGetObject("dbConnectString"));
-
-        dbDataSource.setMaxActive(30);
-        dbDataSource.setMaxWait(30000);//wait 30 seconds for available connections*/
     }
 
     @BeforeClass
@@ -130,19 +99,12 @@ public abstract class BaseIntegrationTest {
     @Before
     public void setUp() throws Exception {
 
-        injectStaticTimeProvider();
-        injectStaticObjectMapper();
-        //create database before each test
-        //DatabasePopulatorUtils.execute(databasePopulator, dataSource);
-
         //clean test database before each test
 
         emptyDatabaseSchema();
 
         ScriptUtils.executeSqlScript(dataSource.getConnection(),
                 new ClassPathResource("humanResources/sql/clean_test_database.sql"));
-
-
 
   /*      ScriptUtils.executeSqlScript(dataSource.getConnection(),
                 new ClassPathResource("humanResources/sql/populate_test_data.sql"));
@@ -152,7 +114,7 @@ public abstract class BaseIntegrationTest {
         this.mockMvc = webAppContextSetup(webApplicationContext)
                 //@Autowire the FilterChainProxy (what the DelegatingProxyFilter delegates to)
                 //and instruct MockMvc to use the FilterChainProxy.
-               // .addFilters(this.springSecurityFilterChain)
+                .addFilters(this.springSecurityFilterChain)
                 .build();
 
 /*
@@ -217,55 +179,76 @@ public abstract class BaseIntegrationTest {
 
     }
 
-    private void injectStaticTimeProvider() {
-
-        /*
-        TestTimeProvider testTimeProvider= new TestTimeProvider(new Date());
-        RsUser.setTimeProvider(testTimeProvider);
-        RsUtil.setTimeProvider(testTimeProvider);
-        Actuation.setTimeProvider(testTimeProvider);*/
-
-
-    }
-
-    private void injectStaticObjectMapper() {
-
-       // RsUser.setObjectMapper(domainObjectMapper);
-
-    }
-
     @After
     public void tearDown() throws Exception {
         /*ScriptUtils.executeSqlScript(dataSource.getConnection(),
                 new ClassPathResource("sql/after_test_database.sql"));*/
     }
-/*
-    protected JsonNode getJSonFromFile(String jsonFile) {
-        JsonNode actualObj;
 
-        try {
-            //String jsonString = IOUtils.toString(new ClassPathResource(jsonFile).getInputStream());
-            String jsonString = "pepe";
-            actualObj = webServicesObjectMapper.readTree(jsonString);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-        return actualObj;
+
+    protected String loginWithUser(String userName){
+        return getStatelessJWTSecurityToken(userName, BaseTestEnvironmentImpl.defaultPassword);
     }
 
-    protected JsonNode getJSonFromObject(Object object) {
-        JsonNode actualObj;
-        try {
-            //String jsonString = IOUtils.toString(new ClassPathResource(jsonFile).getInputStream());
-            //ObjectMapper mapper = new ObjectMapper();
-            actualObj = webServicesObjectMapper.valueToTree(object);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-        return actualObj;
+    /**
+     *
+     * @param userName
+     * @param password
+     * @return
+     */
+    protected String getStatelessJWTSecurityToken(String userName, String password) {
 
+
+        String contextPath = env.getProperty("server.contextPath");
+        String port = env.getProperty("server.port");
+        String strToken = null;
+
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        CloseableHttpResponse httpResponse = null;
+
+        try {
+
+            HttpPost request = new HttpPost("http://localhost:" + port + contextPath+"/api/auth/login");
+            StringEntity params = new StringEntity("{\"username\":\"" + userName + "\",\"password\":\"" + password + "\"}");
+            request.addHeader("content-type", "application/json");
+            request.addHeader("Accept", "application/json");
+            request.addHeader("X-Requested-With", "XMLHttpRequest");
+
+            request.setEntity(params);
+
+            httpResponse = httpclient.execute(request);
+
+            System.out.println(httpResponse.getStatusLine());
+
+            org.apache.http.HttpEntity responseEntity = httpResponse.getEntity();
+            // do something useful with the response body
+            // and ensure it is fully consumed
+
+            //Header header = httpResponse.getFirstHeader("X-AUTH-TOKEN");
+            //strToken = header.getValue();
+
+            String responseBody = EntityUtils.toString(httpResponse.getEntity());
+
+            ObjectMapper mapper = new ObjectMapper();
+            TypeReference<HashMap<String,String>> typeRef
+                    = new TypeReference<HashMap<String,String>>() {};
+
+            HashMap<String,String> responseJson = mapper.readValue(responseBody, typeRef);
+
+            strToken = responseJson.get("token");
+
+            System.out.println(strToken);
+            EntityUtils.consume(responseEntity);
+
+            return strToken;
+        } catch (Exception ex) {
+
+            throw new RuntimeException(ex);
+        } finally {
+            try {if (httpResponse != null) httpResponse.close();} catch (Exception e) {	throw new RuntimeException(e);}
+        }
     }
 
-*/
 
 }

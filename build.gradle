@@ -16,7 +16,7 @@ description = 'The human resources application'
 
 buildscript {
     ext {
-        springBootVersion = '1.4.2.RELEASE'
+        springBootVersion = '1.5.1.RELEASE'
     }
     repositories {
         jcenter()
@@ -105,6 +105,8 @@ subprojects {
             exclude module: 'commons-logging'
         }
         // End: JUnit
+
+        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
 
         testCompile 'org.assertj:assertj-core:3.6.1'
 

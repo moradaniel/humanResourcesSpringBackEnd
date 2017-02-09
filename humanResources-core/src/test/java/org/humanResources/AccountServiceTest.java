@@ -5,11 +5,13 @@ package org.humanResources;
 import org.humanResources.common.BaseTest;
 import org.humanResources.environment.BaseTestEnvironmentImpl;
 import org.humanResources.security.entity.AccountImpl;
+import org.humanResources.security.entity.AccountQueryFilter;
 import org.humanResources.security.service.AccountService;
 import org.junit.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,7 +54,14 @@ public class AccountServiceTest extends BaseTest {
 
         AccountImpl account = baseTestEnvironment.getAccounts().get(BaseTestEnvironmentImpl.User_defaultUser);
 
-        Page<AccountImpl> accounts = accountService.findByNameStartsWith("default");
+        //Page<AccountImpl> accounts = accountService.findByNameStartsWith("default");
+
+        final PageRequest page = new PageRequest(0, 20);
+
+        AccountQueryFilter accountQueryFilter = new AccountQueryFilter();
+        accountQueryFilter.setName(BaseTestEnvironmentImpl.User_defaultUser);
+
+        Page<AccountImpl> accounts = accountService.findByFilter(accountQueryFilter,page);
 
         assertThat(accounts).size().isEqualTo(1);
 
