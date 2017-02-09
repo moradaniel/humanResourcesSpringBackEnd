@@ -87,8 +87,12 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
 ## ChangeLog
 
- - Integrated JWT (Json Web Token) for stateless webservice authentication
+ - Integrated JWT (Json Web Token) for stateless webservice authentication (from vladimir.stankovic)
+ - Added UserDetailsService for user authentication
+ - Added AccountRepositoryImpl.findByFilter for optimizing queries by using JPQL fetch
  - Enabled Spring Security
+ - Encoding (hashing) the account password
+ - Added AccountQueryFilter for filtering account from database
  - Added custom JSON object mapper
  - Added support for Scala
  - Added Integration Tests to account entity

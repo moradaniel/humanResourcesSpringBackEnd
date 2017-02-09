@@ -4,6 +4,7 @@ import org.humanResources.persistence.PersistentAbstract;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -16,23 +17,22 @@ public class AccountImpl extends PersistentAbstract implements Account, java.io.
     @Column(name = "NAME", nullable=false, length =	200)
     private String    name;
 
-
-
     @Column(name = "PASSWORD", nullable=false, length =	200)
     private String    password;
 
-    /*private Date      expire;
-    private Date      expirePassword;
-    private boolean   nonLocked;
-    private boolean   enabled = true;*/
+    @Temporal(TemporalType.DATE)
+    @Column(name="EXPIRE")
+    private Date expire;
 
-    /*@ManyToMany(targetEntity = RoleImpl.class)
-    @JoinTable(name="SEC_ACCOUNT_ROLE",
-            joinColumns={@JoinColumn(name="ACCOUNTID")},
-            inverseJoinColumns={@JoinColumn(name="ROLEID")}
-    )
-    private List<Role> roles = new ArrayList<>();*/
+    @Temporal(TemporalType.DATE)
+    @Column(name="EXPIREPASSWORD")
+    private Date   expirePassword;
 
+    @Column(name = "UNLOCKED", nullable = false)
+    private boolean   nonLocked = true;
+
+    @Column(name = "ENABLED", nullable = false)
+    private boolean   enabled = true;
 
     @OneToMany(mappedBy = "account",
             fetch = FetchType.LAZY,
@@ -57,6 +57,14 @@ public class AccountImpl extends PersistentAbstract implements Account, java.io.
         this.name = name;
     }
 
+    public String getUsername() {
+        return this.getName();
+    }
+
+    public void setUsername(String name) {
+        this.setName(name);
+    }
+
     public String getPassword() {
         return password;
     }
@@ -78,4 +86,53 @@ public class AccountImpl extends PersistentAbstract implements Account, java.io.
         this.getRoles().add(accountRoleAssociation);
     }
 
+
+    public boolean isAccountNonLocked() {
+        return this.nonLocked;
+    }
+
+    public void setAccountNonLocked(boolean b) {
+        this.nonLocked = b;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isAccountNonExpired()
+    {
+        if (this.getExpiration() != null)
+            return this.getExpiration().after(new Date());
+        else
+            return true;
+    }
+
+    public Date getExpiration() {
+        return this.expire;
+    }
+
+    public void setExpiration(Date date) {
+        this.expire = date;
+    }
+
+    public Date getPasswordExpiration() {
+        return expirePassword;
+    }
+
+    public void setPasswordExpiration(Date date) {
+        this.expirePassword = date;
+    }
+
+
+    public boolean isCredentialsNonExpired()
+    {
+        if (this.getPasswordExpiration() != null)
+            return this.getPasswordExpiration().after(new Date());
+        else
+            return true;
+    }
 }
