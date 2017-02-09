@@ -3,7 +3,7 @@
 - Java 1.8
 - Scala
 - Spring Boot
-- Gradle 
+- Gradle
 - Hibernate 
 - Database Oracle 11g 
 
@@ -87,6 +87,8 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 
 ## ChangeLog
 
+ - Integrated JWT (Json Web Token) for stateless webservice authentication
+ - Enabled Spring Security
  - Added custom JSON object mapper
  - Added support for Scala
  - Added Integration Tests to account entity
