@@ -2,7 +2,7 @@
 
 - Java 1.8
 - Scala
-- Spring Boot
+- Spring Boot 1.5.1
 - Gradle
 - Hibernate 
 - Database Oracle 11g 
@@ -86,6 +86,7 @@ mvn install:install-file -Dfile=ojdbc7.jar  -DgroupId=com.oracle -DartifactId=oj
 ```
 
 ## ChangeLog
+ - Added basic support for JWT refresh tokens
  - Added integration tests for JWT login and requests
  - Integrated JWT (Json Web Token) for stateless webservice authentication (from vladimir.stankovic)
  - Added UserDetailsService for user authentication

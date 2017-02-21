@@ -45,4 +45,19 @@ public class AccountController {
     }
 
 
+    @RequestMapping(value="/api/accounts",
+            method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public @ResponseBody Page<AccountImpl> findAccounts(){
+
+          /*      Pageable pageRequest = new PageRequest(0, 1000);
+        Page<Account> accounts = accountRepository.findByNameStartsWith(name,pageRequest);
+*/
+        final PageRequest page = new PageRequest(0, 20);
+
+        AccountQueryFilter accountQueryFilter = new AccountQueryFilter();
+
+        return accountService.findByFilter(accountQueryFilter,page);
+    }
+
 }
