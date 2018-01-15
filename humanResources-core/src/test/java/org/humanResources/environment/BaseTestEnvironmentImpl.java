@@ -6,7 +6,9 @@ import org.humanResources.security.service.AccountService;
 import org.humanResources.security.service.RoleService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public  class BaseTestEnvironmentImpl /*implements BaseTestEnvironment*/{
@@ -17,7 +19,7 @@ public  class BaseTestEnvironmentImpl /*implements BaseTestEnvironment*/{
 
 
 	Map<String, AccountImpl> accounts = null;
-	Map<String, Role> roles = null;
+	Map<String, RoleImpl> roles = null;
 
 
 	//roles
@@ -38,7 +40,7 @@ public  class BaseTestEnvironmentImpl /*implements BaseTestEnvironment*/{
 	}
 
 	//@Override
-	public void build() throws Exception {
+	public void build(boolean persist) throws Exception {
 
 		accounts = new HashMap<>();
 
@@ -49,9 +51,9 @@ public  class BaseTestEnvironmentImpl /*implements BaseTestEnvironment*/{
 
 		populateAccounts();
 
-
-
-
+		if(persist) {
+			this.persist();
+		}
 
 	}
 
@@ -80,7 +82,7 @@ public  class BaseTestEnvironmentImpl /*implements BaseTestEnvironment*/{
                 .withEnabled(Boolean.TRUE.booleanValue())
 				.build();
 
-        SYS_ADMIN_Role = (RoleImpl)roleService.save(SYS_ADMIN_Role);
+ //       SYS_ADMIN_Role = (RoleImpl)roleService.save(SYS_ADMIN_Role);
 
 		roles.put(Role_SYS_ADMIN, SYS_ADMIN_Role);
 
@@ -110,7 +112,7 @@ public  class BaseTestEnvironmentImpl /*implements BaseTestEnvironment*/{
 
 		defaultUser.addRole(association);
 
-        defaultUser = accountService.save(defaultUser);
+//        defaultUser = accountService.save(defaultUser);
 
 		//userDao.updatePassWord(defaultUser, defaultUser.getPassword());
 
@@ -119,7 +121,23 @@ public  class BaseTestEnvironmentImpl /*implements BaseTestEnvironment*/{
 	}
 
 
-
+	private void persist(){
+		
+		/*List<Account> result5 = accounts.values().stream()
+								.collect(Collectors.toList());
+				
+		Arrays.stream(values)
+	      .mapToObj(i -> Integer.toUnsignedString(i, 16))
+	      .forEach(System.out::println);
+		*/
+		
+		roles.values().stream()
+			.forEach(roleService::save);
+		
+		accounts.values().stream()
+				.forEach(accountService::save);
+				
+	}
 
 
 	//@Override
@@ -134,7 +152,7 @@ public  class BaseTestEnvironmentImpl /*implements BaseTestEnvironment*/{
 	}
 
 	//@Override
-	public Map<String, Role> getRoles(){
+	public Map<String, RoleImpl> getRoles(){
 		return this.roles;
 	}
 

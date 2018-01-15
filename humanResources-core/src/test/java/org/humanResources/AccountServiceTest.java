@@ -1,102 +1,74 @@
-
 package org.humanResources;
 
-
-import org.humanResources.common.BaseTest;
-import org.humanResources.environment.BaseTestEnvironmentImpl;
-import org.humanResources.security.entity.AccountImpl;
+import org.humanResources.security.entity.Account;
+import org.humanResources.security.entity.AccountBuilder;
 import org.humanResources.security.entity.AccountQueryFilter;
+import org.humanResources.security.entity.AccountRepository;
 import org.humanResources.security.service.AccountService;
-import org.junit.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-public class AccountServiceTest extends BaseTest {
-
+import static org.mockito.BDDMockito.any;
 
 
-    @Autowired
-    @Qualifier("accountService")
-    AccountService accountService;
+/**
+ * Unit Test for the AccountRepository service
+ * The AccountRepository is a mock
+ * No spring infrastructure is initialized
+ *  
+ *  Book: Beginning Spring Boot 2
+ *  Chapter 15 Testing Spring Boot Applications
+ * 
+ */
 
-	@Autowired
-	BaseTestEnvironmentImpl baseTestEnvironment;
-	
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		//BaseTest.setUpClass();
-	}
+@RunWith(MockitoJUnitRunner.class)
+    public class AccountServiceTest
+    {
+        @Mock
+        private AccountRepository accountRepository;
 
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-	}
+        @InjectMocks
+        private AccountService accountService;
 
-	@Before
-	public void setUp() throws Exception {
-		System.out.println("Did setup.");
-		super.setUp();
-		
-		
-	}
-	
-	@After
-	public void tearDown() throws Exception {
-	}
-	
-	@Test
-	public void testAccounts() throws Exception {
+        @Test
+        public void should_retrieve_accounts_when_calling_findByFilter() {
 
-        baseTestEnvironment.build();
+            List<Account> accounts = new ArrayList<>();
+            Account account1 = AccountBuilder.anAccount()
+                                    .withName("account1")
+                                    .withPassword("passaccount1")
+                                    .build();
 
-        AccountImpl account = baseTestEnvironment.getAccounts().get(BaseTestEnvironmentImpl.User_defaultUser);
+            Account account2 = AccountBuilder.anAccount()
+                    .withName("account2")
+                    .withPassword("passaccount2")
+                    .build();
 
-        //Page<AccountImpl> accounts = accountService.findByNameStartsWith("default");
+            accounts.add(account1);
+            accounts.add(account2);
 
-        final PageRequest page = new PageRequest(0, 20);
+            Page<Account> page = new PageImpl(accounts);
 
-        AccountQueryFilter accountQueryFilter = new AccountQueryFilter();
-        accountQueryFilter.setName(BaseTestEnvironmentImpl.User_defaultUser);
+            BDDMockito.<Page<Account>>given(accountRepository.findByFilter(any(AccountQueryFilter.class),any(Pageable.class)))
+                                        .willReturn(page);
 
-        Page<AccountImpl> accounts = accountService.findByFilter(accountQueryFilter,page);
+            final PageRequest pageable = new PageRequest(0, 20);
 
-        assertThat(accounts).size().isEqualTo(1);
+            Page<Account> result = accountService.findByFilter(new AccountQueryFilter(), pageable );
 
+            assertThat(result.getTotalElements()).isEqualTo(2);
 
-        assertThat(accounts.getContent().get(0).getRoles().size()).isEqualTo(1);
-
-
-	}
-
-
-    @Test
-    public void testUpdateNameAccount() throws Exception {
-
-        baseTestEnvironment.build();
-
-        String newName = "defaultUser2";
-
-        AccountImpl account = baseTestEnvironment.getAccounts().get(BaseTestEnvironmentImpl.User_defaultUser);
-
-        account = accountService.findById(account.getId());
-
-        assertThat(account).isNotNull();
-
-        account.setName(newName);
-
-        accountService.save(account);
-
-        account = accountService.findById(account.getId());
-
-
-        assertThat(account.getName()).isEqualTo(newName);
-
+        }
     }
-
-
-
-
-}
